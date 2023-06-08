@@ -151,6 +151,12 @@ async function run() {
             res.send(result)
         })
 
+        app.post('/info', verifyJWT, async (req, res) => {
+            const newItem = req.body;
+            const result = await infoCollection.insertOne(newItem);
+            res.send(result)
+        })
+
 
         // cart collection 
 
