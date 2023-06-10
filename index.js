@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
 const app = express();
 
 const port = process.env.PORT || 5000;
@@ -51,6 +52,7 @@ async function run() {
         const infoCollection = client.db("schoolDb").collection("info");
         const cartCollection = client.db("schoolDb").collection("carts");
         const usersCollection = client.db("schoolDb").collection("users");
+        const paymentCollection = client.db("schoolDb").collection("payments");
 
         app.post('/jwt', (req, res) => {
             const user = req.body;
@@ -229,6 +231,39 @@ async function run() {
             const result = await cartCollection.deleteOne(query);
             res.send(result);
         })
+
+        // payment api 
+
+        app.get('/pay', async (req, res) => {
+            const result = await paymentCollection.find().toArray();
+            res.send(result);
+        })
+
+
+        app.post('/create-payment-intent', verifyJWT, async (req, res) => {
+            const { price } = req.body;
+            const amount = parseInt(price * 100);
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: amount,
+                currency: 'usd',
+                payment_method_types: ['card']
+            });
+
+            res.send({
+                clientSecret: paymentIntent.client_secret
+            })
+        })
+
+        app.post('/payments', async (req, res) => {
+            const payment = req.body;
+            const result = await paymentCollection.insertOne(payment);
+            const query = { _id: new ObjectId(payment.classId) };
+            
+            // const query = { _id: { $in: payment.cartItems.map(id => new ObjectId(id)) } }
+            const deleteResult = await cartCollection.deleteOne(query)
+            res.send({result, deleteResult});
+        })
+
 
 
         // Send a ping to confirm a successful connection
