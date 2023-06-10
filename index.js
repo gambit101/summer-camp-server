@@ -234,7 +234,7 @@ async function run() {
 
         // payment api 
 
-        app.get('/pay', async (req, res) => {
+        app.get('/pay',  async (req, res) => {
             const result = await paymentCollection.find().toArray();
             res.send(result);
         })
