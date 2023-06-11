@@ -177,7 +177,7 @@ async function run() {
 
         app.patch('/info/denied/:id', async (req, res) => {
             const id = req.params.id;
-            // console.log(id);
+            
             const filter = { _id: new ObjectId(id) };
             const updateDoc = {
                 $set: {
@@ -229,7 +229,7 @@ async function run() {
 
         app.post('/carts', async (req, res) => {
             const item = req.body;
-            // console.log(item)
+            
             const result = await cartCollection.insertOne(item);
             res.send(result);
         })
