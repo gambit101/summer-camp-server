@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
-const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY);
 const app = express();
 
 const port = process.env.PORT || 5000;
@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 // middleware
 
 app.use(cors());
-app.use(express.json())
+app.use(express.json());
 
 const verifyJWT = (req, res, next) => {
     const authorization = req.headers.authorization;
