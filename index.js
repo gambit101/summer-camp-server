@@ -53,6 +53,7 @@ async function run() {
         const cartCollection = client.db("schoolDb").collection("carts");
         const usersCollection = client.db("schoolDb").collection("users");
         const paymentCollection = client.db("schoolDb").collection("payments");
+        const instructorCollection = client.db("schoolDb").collection("instructors");
 
         app.post('/jwt', (req, res) => {
             const user = req.body;
@@ -70,6 +71,15 @@ async function run() {
             }
             next();
         }
+
+        // instructor api
+
+
+        app.get('/instructors', async (req, res) => {
+            const result = await instructorCollection.find().toArray();
+            res.send(result);
+        })
+
 
         // user api 
 
@@ -234,7 +244,7 @@ async function run() {
 
         // payment api 
 
-        app.get('/pay',  async (req, res) => {
+        app.get('/pay', async (req, res) => {
             const result = await paymentCollection.find().toArray();
             res.send(result);
         })
@@ -258,10 +268,10 @@ async function run() {
             const payment = req.body;
             const result = await paymentCollection.insertOne(payment);
             const query = { _id: new ObjectId(payment.classId) };
-            
+
             // const query = { _id: { $in: payment.cartItems.map(id => new ObjectId(id)) } }
             const deleteResult = await cartCollection.deleteOne(query)
-            res.send({result, deleteResult});
+            res.send({ result, deleteResult });
         })
 
 
