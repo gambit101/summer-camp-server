@@ -207,7 +207,7 @@ async function run() {
         })
 
 
-        // cart collection 
+        // cart collection apis
 
         app.get('/carts', verifyJWT, async (req, res) => {
             const email = req.query.email;
@@ -241,7 +241,7 @@ async function run() {
             res.send(result);
         })
 
-        // payment api 
+        // payment apis
 
         app.get('/pay', async (req, res) => {
             const result = await paymentCollection.find().toArray();
